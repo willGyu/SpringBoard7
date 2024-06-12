@@ -44,7 +44,9 @@ public class BoardController {
 		
 		// 페이지 이동		
 		return "redirect:/board/list";
+//		return "/board/list";
 	}
+	
 	
 	
 	
