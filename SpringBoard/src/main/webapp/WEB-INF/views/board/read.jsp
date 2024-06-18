@@ -53,15 +53,20 @@
 		
 		// '수정'버튼 클릭
 		$(".btn-danger").click(function(){
-			
 			//alert("수정 버튼");
 			// 수정페이지로 이동(+bno)
 			//$("form").attr("action","/board/modify");
 			$("form[role='form']").attr("action","/board/modify");
 			$("form[role='form']").attr("method","GET");
 			$("form[role='form']").submit();
-			
 		});
+		
+		// '삭제' 버튼 클릭
+		$('.btn-warning').click(function(){
+			$("form[role='form']").attr("action","/board/remove");
+			$("form[role='form']").submit();			
+		});
+		
 		
 		// '리스트'버튼 클릭시 리스트 페이지로 이동
 		$(".btn-primary").click(function(){

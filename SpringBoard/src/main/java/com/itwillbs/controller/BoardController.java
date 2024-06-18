@@ -151,6 +151,24 @@ public class BoardController {
 	}
 	
 	
+	// 게시판 글 삭제 - POST
+	@RequestMapping(value = "/remove",method = RequestMethod.POST)
+	public String removePOST(RedirectAttributes rttr, /* @ModelAttribute("bno") *//* @RequestParam("bno") */ int bno) throws Exception {
+		logger.debug(" removePOST() 실행 ");
+		
+		logger.debug(" 삭제할 글 번호 : {}",bno);
+		
+		// 서비스 - DAO 글 삭제 동작
+		bService.deleteBoard(bno);
+		
+		// 전달정보 저장
+		rttr.addFlashAttribute("msg","deleteOK");
+		
+		
+		// 페이지 이동
+		return "redirect:/board/listALL";		
+	}
+	
 	
 	
 
