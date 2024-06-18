@@ -104,6 +104,10 @@
 			Swal.fire("게시판 글 수정완료!");
 		}
 			
+		if(result == "deleteOK"){
+			Swal.fire("게시판 글 삭제 완료!");
+			
+		}
 
 
 	});
