@@ -9,7 +9,7 @@
 		<h3 class="box-title">/board/read.jsp</h3>
 	</div>
 	
-		<form action=""  method="post">
+		<form role="form" action=""  method="post">
 			<%-- <input type="text" name="bno" value="${resultVO.bno }"> --%> 
 			<input type="hidden" name="bno" value="${param.bno }"> 
 		
@@ -56,9 +56,10 @@
 			
 			//alert("수정 버튼");
 			// 수정페이지로 이동(+bno)
-			$("form").attr("action","/board/modify");
-			$("form").attr("method","GET");
-			$("form").submit();
+			//$("form").attr("action","/board/modify");
+			$("form[role='form']").attr("action","/board/modify");
+			$("form[role='form']").attr("method","GET");
+			$("form[role='form']").submit();
 			
 		});
 		
