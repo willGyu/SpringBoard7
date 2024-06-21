@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itwillbs.domain.BoardVO;
+import com.itwillbs.domain.Criteria;
+import com.itwillbs.domain.PageVO;
 import com.itwillbs.service.BoardService;
 
 @Controller
@@ -53,7 +55,8 @@ public class BoardController {
 		rttr.addFlashAttribute("msg", "createOk");
 		
 		// 페이지 이동		
-		return "redirect:/board/listALL";
+		return "redirect:/board/listPage";
+		//return "redirect:/board/listALL";
 		//return "redirect:/board/listALL?msg=createOk";
 //		return "/board/list";
 	}
@@ -78,11 +81,36 @@ public class BoardController {
 		return "/board/list";
 	}
 	
+	@GetMapping(value = "/listPage")
+	public String listPageGET(Criteria cri,Model model) throws Exception{
+		logger.debug(" listPageGET() 실행 ");
+		// 페이징 처리 정보 객체
+		//		Criteria cri = new Criteria();
+		//		cri.setPage(1);
+		//		cri.setPageSize(10);
+		
+		// 서비스 -> DB의 정보를 가져오기 (페이징처리)
+		List<BoardVO> boardList = bService.listPage(cri);
+		logger.debug(" size : "+boardList.size());
+		
+		// 하단 페이징처리 정보객체 생성
+		PageVO pageVO = new PageVO();
+		pageVO.setCri(cri);
+		//pageVO.setTotalCount(102400);		
+		pageVO.setTotalCount(bService.getTotalCount());		
+		
+		// 연결된 뷰페이지로 정보 전달
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("pageVO", pageVO);
+		
+		return "/board/list";
+	}
+	
 	// http://localhost:8088/board/read?bno=9
 	
 	// 게시판 본문보기 - readGET
 	@RequestMapping(value = "/read",method = RequestMethod.GET)
-	public void readGET(Model model,@RequestParam("bno") int bno/* ,@ModelAttribute("bno") int bno */) throws Exception{
+	public void readGET(Criteria cri,Model model,@RequestParam("bno") int bno/* ,@ModelAttribute("bno") int bno */) throws Exception{
 		// @ModelAttribute("bno") int bno
 		// => 주소줄에 있는 데이터를 가져와서 사용, 연결된 뷰페이지로 이동 $ {bno}
 		//   request.getParameter("bno") + request.setAttribute();
@@ -106,6 +134,8 @@ public class BoardController {
      
 		// 전달할 정보를 저장(model)
 		model.addAttribute("resultVO", resultVO);
+		
+		model.addAttribute("cri",cri);
 		// 연결된 뷰페이지이동		
 		
 	}
@@ -134,7 +164,7 @@ public class BoardController {
 	
 	// 게시판 글 수정하기(글정보 수정) - POST
 	@RequestMapping(value = "/modify",method = RequestMethod.POST)
-	public String modifyPOST(BoardVO vo,RedirectAttributes rttr) throws Exception{
+	public String modifyPOST(Criteria cri,BoardVO vo,RedirectAttributes rttr) throws Exception{
 		logger.debug(" modifyPOST() 실행 ");
 		// 한글처리 인코딩(필터)
 		// 전달정보 저장
@@ -145,15 +175,19 @@ public class BoardController {
 		
 		// 상태 정보 전달
 		rttr.addFlashAttribute("msg", "updateOK");
+		//rttr.addFlashAttribute("page", cri.getPage()); (x) request 영역에 저장
+		rttr.addAttribute("page", cri.getPage());
 		
 		// 페이지 이동(listALL.jsp)		
-		return "redirect:/board/listALL";
+		//return "redirect:/board/listALL";
+		//return "redirect:/board/listPage?page="+cri.getPage();
+		return "redirect:/board/listPage";
 	}
 	
 	
 	// 게시판 글 삭제 - POST
 	@RequestMapping(value = "/remove",method = RequestMethod.POST)
-	public String removePOST(RedirectAttributes rttr, /* @ModelAttribute("bno") *//* @RequestParam("bno") */ int bno) throws Exception {
+	public String removePOST(Criteria cri,RedirectAttributes rttr, /* @ModelAttribute("bno") *//* @RequestParam("bno") */ int bno) throws Exception {
 		logger.debug(" removePOST() 실행 ");
 		
 		logger.debug(" 삭제할 글 번호 : {}",bno);
@@ -163,10 +197,12 @@ public class BoardController {
 		
 		// 전달정보 저장
 		rttr.addFlashAttribute("msg","deleteOK");
+		rttr.addAttribute("page", cri.getPage());
 		
 		
 		// 페이지 이동
-		return "redirect:/board/listALL";		
+		//return "redirect:/board/listALL";		
+		return "redirect:/board/listPage";		
 	}
 	
 	
